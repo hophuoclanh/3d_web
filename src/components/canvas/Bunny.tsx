@@ -1,15 +1,25 @@
-import React, { Suspense, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import React, { Suspense, useEffect, useState, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
-
 import CanvasLoader from "../Loader";
 
-const Computers = ({ isMobile }) => {
-  const computer = useGLTF("./desktop_pc/scene.gltf");
+const Bunny = ({ isMobile }) => {
+  const bunny = useGLTF("./cute_cartoon_bunny/scene.gltf");
+  const bunnyRef = useRef();
+
+  // Animate the bunny to jump automatically on every frame
+  useFrame(({ clock }) => {
+    if (bunnyRef.current) {
+      const t = clock.getElapsedTime();
+      const amplitude = 0.75; // Height of the jump
+      const frequency = 2;    // Speed of the jump
+      bunnyRef.current.position.y = -1 + Math.abs(Math.sin(t * frequency)) * amplitude;
+    }
+  });
 
   return (
-    <mesh>
-      <hemisphereLight intensity={0.15} groundColor='black' />
+    <group ref={bunnyRef}>
+      <hemisphereLight intensity={1} groundColor="black" />
       <spotLight
         position={[-20, 50, 10]}
         angle={0.12}
@@ -20,34 +30,26 @@ const Computers = ({ isMobile }) => {
       />
       <pointLight intensity={1} />
       <primitive
-        object={computer.scene}
-        scale={isMobile ? 0.7 : 0.75}
-        position={isMobile ? [0, -3, -2.2] : [0, -3.25, -1.5]}
-        rotation={[-0.01, -0.2, -0.1]}
+        object={bunny.scene}
+        scale={isMobile ? 1 : 1.5}
+        rotation={[0, 1.25, 0]}
+        position={[0, -0.75, 0]}
       />
-    </mesh>
+    </group>
   );
 };
 
-const ComputersCanvas = () => {
+const BunnyCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Add a listener for changes to the screen size
     const mediaQuery = window.matchMedia("(max-width: 500px)");
-
-    // Set the initial value of the `isMobile` state variable
     setIsMobile(mediaQuery.matches);
-
-    // Define a callback function to handle changes to the media query
     const handleMediaQueryChange = (event) => {
       setIsMobile(event.matches);
     };
 
-    // Add the callback function as a listener for changes to the media query
     mediaQuery.addEventListener("change", handleMediaQueryChange);
-
-    // Remove the listener when the component is unmounted
     return () => {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
@@ -55,7 +57,7 @@ const ComputersCanvas = () => {
 
   return (
     <Canvas
-      frameloop='demand'
+      frameloop="demand"
       shadows
       dpr={[1, 2]}
       camera={{ position: [20, 3, 5], fov: 25 }}
@@ -67,12 +69,13 @@ const ComputersCanvas = () => {
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
         />
-        <Computers isMobile={isMobile} />
+        <Bunny isMobile={isMobile} />
       </Suspense>
-
       <Preload all />
     </Canvas>
   );
 };
 
-export default ComputersCanvas;
+export default BunnyCanvas;
+
+
