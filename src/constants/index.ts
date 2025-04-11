@@ -1,8 +1,4 @@
 import {
-    mobile,
-    backend,
-    creator,
-    web,
     javascript,
     typescript,
     html,
@@ -23,6 +19,10 @@ import {
     jobit,
     tripguide,
     threejs,
+    workspace,
+    conference,
+    meeting_room,
+    office,
   } from "../assets";
   
   export const navLinks = [
@@ -42,20 +42,20 @@ import {
   
   const services = [
     {
-      title: "Web Developer",
-      icon: web,
+      title: "Public Desk",
+      icon: workspace,
     },
     {
-      title: "React Native Developer",
-      icon: mobile,
+      title: "Private Desk",
+      icon: office,
     },
     {
-      title: "Backend Developer",
-      icon: backend,
+      title: "Small Room",
+      icon: meeting_room,
     },
     {
-      title: "Content Creator",
-      icon: creator,
+      title: "Conference Room",
+      icon: conference,
     },
   ];
   
